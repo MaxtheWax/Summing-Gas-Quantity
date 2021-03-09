@@ -1,10 +1,15 @@
 # Summing-Gas-Quantity
-# code for reading massive gas production data sheet and summing overal gas and oil production
+# code for reading massive gas production data sheet and summing overall gas and oil production
 library(readxl)
+
 library(writexl)
+
 library(tidyr)
+
 library(tidyverse)
+
 library(lubridate)
+
 library(zoo)
 
 #find large data sheet on computer and read it into R
