@@ -1,0 +1,11 @@
+for (x in TOP_100_PERMIT_NUMS) {
+  a <- subset(TOP_100_WELLS_SWPA_MONTHLY_OUTPUT, WELL_PERMIT_NUM == x)
+  i = min(which(REPORTING_PERIOD_IDS %in% a$REPORTING_PERIOD_ID))
+  j = REPORTING_PERIOD_IDS[i:71]
+  if(length(REPORTING_PERIOD_IDS[i:71]) != length(a$REPORTING_PERIOD_ID)) {
+      
+      print(x)
+      print(j[which(!(REPORTING_PERIOD_IDS[i:71] %in% a$REPORTING_PERIOD_ID))])
+  }
+}  
+  
