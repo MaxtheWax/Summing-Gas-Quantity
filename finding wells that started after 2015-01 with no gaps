@@ -1,0 +1,39 @@
+library(readxl)
+
+#import large dataframe of natural gas well data
+MASSIVE_UNCONVENTIONAL_GAS_PROD_DF <- read_xlsx(file.path)
+
+#create vector to store good well ids
+GOOD_WELL_IDS <- vector()
+
+#run for loop to add well permit numbers to GOOD_WELL_IDS of all the 
+#wells for which the data starts after the beginning of our time frame
+for (x in unique(MASSIVE_UNCONVENTIONAL_GAS_PROD_DF$WELL_PERMIT_NUM)) {
+     a <- subset(MASSIVE_UNCONVENTIONAL_GAS_PROD_DF, WELL_PERMIT_NUM == x)
+     if (a$REPORTING_PERIOD_ID[1] != "2015-01") {
+         GOOD_WELL_IDS <- append(GOOD_WELL_IDS,a$WELL_PERMIT_NUM[1])
+     }
+ }
+ 
+ #subset MASSIVE_UNCONVENTIONAL_GAS_PROD_DF based on these GOOD_WELL_IDS
+ WELLS_STARTED_AFTER_JAN_2015 <- subset(MASSIVE_UNCONVENTIONAL_GAS_PROD_DF, WELL_PERMIT_NUM %in% GOOD_WELL_IDS)
+ 
+ #clear GOOD_WELL_IDS so we can compile based on new data frame
+ GOOD_WELL_IDS <- vector()
+ 
+ #create vector of reporting period ids in chronological order
+ REPORTING_PERIOD_IDS <- unique(MASSIVE_UNCONVENTIONAL_GAS_PROD_DF$REPORTING_PERIOD_ID)
+ 
+ #run code to find all well permit numbers for which there are no gaps
+ #in monthly gas quantity output and add this to our newly wiped GOOD_WELL_IDS vector
+ for (x in unique(WELLS_STARTED_AFTER_JAN_2015$WELL_PERMIT_NUM)) {
+     a <- subset(WELLS_STARTED_AFTER_JAN_2015, WELL_PERMIT_NUM == x)
+     i = min(which(REPORTING_PERIOD_IDS %in% a$REPORTING_PERIOD_ID))
+     if(length(REPORTING_PERIOD_IDS[i:71]) == length(a$REPORTING_PERIOD_ID)) {
+         
+         GOOD_WELL_IDS <- append(GOOD_WELL_IDS, a$WELL_PERMIT_NUM[1])
+     }
+ }  
+
+#finally subest WELLS_STARTED_AFTER_JAN_2015 by our new GOOD_WELL_IDS vector
+GOOD_WELL_GAS_DATA <- subset(WELLS_STARTED_AFTER_JAN_2015, WELL_PERMIT_NUM %in% GOOD_WELL_IDS)
